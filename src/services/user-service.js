@@ -3,9 +3,27 @@ import Http from './http'; // não precisa de .js
 
 
 export const create = (User) => Http.post('/users', User);
-export const update = (User) => Http.put('/users', User);
-// export const delete = (id) => Http.delete('/users/'+id);
 
 export const get = (id) => {  
   return Http.get('/users/'+id);
 };
+
+export const update = (user) => {
+  return Http.put('/users/',user)
+}
+
+export const removeAddress = (id) => {
+  return Http.delete('/addresses/'+id)
+}
+
+export const removePhone = (id) => {
+  return Http.delete('/phones/'+ id)
+}
+
+export const getCountries = () => {
+  return Http.get('/countries/');
+}
+
+export const getStates =() => {
+  return Http.get('/states/');
+}
