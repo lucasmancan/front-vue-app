@@ -4,7 +4,7 @@ import Home from './components/Home'
 import Login from './components/Login'
 import Register from './components/Register'
 import Account from './components/Account'
-import auth from './services/auth-service'
+import User from './components/User'
  const router = new Router({
     mode: 'history',
     routes: [
@@ -29,15 +29,30 @@ import auth from './services/auth-service'
         },
         {
             path: '/account',
-            component: Account
+            component: Account,
+            children: [
+                { path: '', component: User, props: { userId: {} }},
+
+            ]
         }
 
     ]
 }
 )
+router.beforeResolve((to, from, next) => {
+    // If this isn't an initial page load.
+    if (to.name) {
+        // Start the route progress bar.
+       NProgress.start();
+    }
+    next();
+  })
+  
+  router.afterEach((to, from) => {
+    // Complete the animation of the route progress bar.
+   NProgress.done();
+  })
+  
 
-router.beforeEach((to, from, next) => {
-next()
- });
 
 export default router;

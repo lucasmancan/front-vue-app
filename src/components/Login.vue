@@ -8,7 +8,7 @@
                     alt="">
                     <!-- <h3>Welcome</h3> -->
                 <form class="form-signin" v-on:submit.prevent="login()">
-                <input v-model="account.email" type="text" class="form-control" placeholder="Email" required autofocus>
+                <input v-model="account.email" type="email" class="form-control" placeholder="Email" required autofocus>
                 <input v-model="account.password" type="password" class="form-control" placeholder="Password" required>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                     Sign in</button>
@@ -37,7 +37,7 @@ export default {
     account: {
         email:'lucasmancan',
         password:'lucasmancan'
-    }
+         }
     }
   },
   methods:{
@@ -47,7 +47,7 @@ export default {
           if(res.success){
             localStorage.setItem("user-token", res.data);
 
-            this.$router.push('/account')
+            this.$router.push('/account', )
           }else{
               localStorage.removeItem("user-token");
           }

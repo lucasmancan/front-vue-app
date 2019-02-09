@@ -1,116 +1,55 @@
 <template>
-  <div class="account">
-   <input type="text" v-model="user.firstName">
-   <input type="text" v-model="user.lastName">
-   <input type="text" v-model="user.email">
-   <input type="text" v-model="user.age">
-   <input type="text" v-model="user.birthDate">
-   <textarea type="date" v-model="user.bio"/>
-    <select class="form-control" v-model ="user.gender" id="exampleFormControlSelect1" required>
-    <option value="">Select your gender</option>
-      <option value="M">Male</option>
-      <option value="F">Female</option>
-      <option value="O">Others</option>
-    </select>
+      <md-app  md-waterfall md-mode="flexible">
+        <md-app-toolbar class="md-primary md-large">
+          <div class="md-toolbar-row">
+            <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
+              <md-icon>menu</md-icon>
+            </md-button>
 
-<div class="phones">
-  <div class="div" v-for="(phone, key) in user.phones" v-bind:key="phone.id">
-    <input v-model="phone.ddi" type="text">
-    <input v-model="phone.ddd" type="text">
-    <input v-model="phone.phone" type="text">
- 
-  <button v-on:click.prevent = "removePhone(key)">Delete</button>
-  </div>
-  <button v-on:click.prevent = "addPhone">Add</button>
-</div>
+            <span class="md-title">Account</span>
+          </div>
+        </md-app-toolbar>
 
-<div class="addresses">
-  <div class="div" v-for="(address, key) in user.addresses" v-bind:key="address.id">
-    <input v-model="address.street" type="text">
-    <input v-model="address.number" type="text">
-    <input v-model="address.neighborhood" type="text">
-    <select class="form-control" v-model ="address.state" id="contrys" required>
-      <option value="">Select your country</option>
-      <option value="M" v-for="country in countries" v-bind:key="country.id">{{name}}</option>
-    </select>
-    <select class="form-control" v-model ="address.contry" id="contrys" required>
-      <option value="">Select your country</option>
-      <option value="M" v-for="country in countries" v-bind:key="country.id">{{name}}</option>
-    </select>
-    
-  <button v-on:click.prevent = "removeAddress(key)">Delete</button>
-  </div>
-  <button v-on:click.prevent = "addAddress">Add</button>
-</div>
+        <md-app-drawer :md-active.sync="menuVisible">
+          <md-toolbar class="md-transparent" md-elevation="0">Navigation</md-toolbar>
 
-  </div>
+          <md-list>
+            <md-list-item>
+              <md-icon>move_to_inbox</md-icon>
+              <span class="md-list-item-text"><router-link to="../account/">Basic Information</router-link></span>
+            </md-list-item>
+
+            <md-list-item>
+              <md-icon>send</md-icon>
+              <span class="md-list-item-text"><router-link to="../account/address">Address Information</router-link></span>
+            </md-list-item>
+
+            <md-list-item>
+              <md-icon>delete</md-icon>
+              <span class="md-list-item-text">Reset your password</span>
+            </md-list-item>
+
+          </md-list>
+        </md-app-drawer>
+        <md-app-content>
+             <router-view></router-view>
+      </md-app-content>
+
+      </md-app>
 </template>
 
 <script>
-
-import userService from '../services/user-service';
 export default {
-  name: 'Account',
-  data: function(){
+  name: "Account",
+  data: function() {
     return {
       user: {},
-      states:[],
-      countries:[]
-    }
-  },
-  methods: {
-    saveUser: function() {
-      userService.save().then(res => {
-          console.log(res);
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }, getCountries: function() {
-      userService.getCountries().then(res => {
-          console.log(res),
-          this.countries = res.data;
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }, getStates: function() {
-      userService.getStates().then(res => {
-          console.log(res),
-          this.states = res.data;
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }, removeAddress: function(index) {
-      userService.removeAddress(index).then(res => {
-          console.log(res),
-          this.getUser(this.user.id);
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }, removePhone: function(index) {
-      userService.removePhone(index).then(res => {
-          console.log(res),
-          this.getUser(this.user.id);
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }, getUser: function(index) {
-      userService.get(index).then(res => {
-          console.log(res),
-          this.getUser(this.user.id);
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
-    }
-  },
- created: function(){
-    userService.get(index).then(res => {
-          console.log(res),
-          this.getUser(this.user.id);
-      }).catch(error => {
-          console.log("ERROR ", error)
-      }) 
- }
-}
+      states: [],
+      countries: [],
+      menuVisible: false
+    };
+  }
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -128,5 +67,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.md-app {
+   height: 100vh;
 }
 </style>

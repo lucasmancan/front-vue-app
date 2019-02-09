@@ -1,9 +1,5 @@
 <template>
-  <div id="app">
-    <!-- <HelloWorld msg="Welcome to Your Vue.js App" hello="Hello world, my Vue App"/> -->
-    <!-- <Home></Home> -->
     <router-view/>
-  </div>
 </template>
 
 <script>

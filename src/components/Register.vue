@@ -4,20 +4,20 @@
         <!-- <div class="col-sm-6 col-md-4 col-md-offset-4"> -->
             <h1 class="text-center login-title">Create an Account</h1>
             <div class="account-wall">
-                <form class="form-signin">
-                <input type="text" class="form-control" placeholder="Username" required autofocus>
-                <input type="text" class="form-control" placeholder="Email" required autofocus>
-                <input type='date' data-date-format="DD-MM-YYYY" class="form-control" />
-
-    <!-- <select class="form-control" id="exampleFormControlSelect1" required>
-    <option value="">Select your gender</option>
-      <option value="M">Male</option>
-      <option value="F">Female</option>
-      <option value="O">Others</option>
-    </select> -->
-                <input type="password" class="form-control" placeholder="Password" required>
-                <input type="password" class="form-control" placeholder="Confirm your password" required> 
-
+                <form  class="form-signin" v-on:submit.prevent="register">
+                <input type="text" maxlength="255" class="form-control" v-model="user.firstName" placeholder="First Name" required autofocus>
+                <input type="text" maxlength="255" class="form-control" v-model="user.lastName" placeholder="Last Name" required autofocus>
+                <input type="email" class="form-control" placeholder="Email" v-model="user.email" required autofocus>
+                <input type="password" name="password" v-model="user.password" class="form-control" placeholder="Password" required>
+                <input type="password" v-model="passwordConfirmation" v-on:blur="validate()" name="confirmationPassword" class="form-control" placeholder="Confirm your password" required> 
+                <div v-if="passwordError" class="alert alert-danger" role="alert">
+                <strong>Oops..!</strong> The password confirmation didn't match.
+                </div>
+                <div v-if="errors.length > 0" class="alert alert-danger" role="alert">
+                     <div v-for="error in errors" v-bind:key="error">
+                        {{error}}
+                    </div>
+                </div>
                 <button class="btn btn-lg btn-primary btn-block" type="submit">
                     Sing Up</button>
                 </form> 
@@ -30,12 +30,60 @@
 
 <script>
 
+import User from '../models/user';
+import userService from '../services/user-service';
+import Vue from 'vue';
+import formLoading from 'vue2-form-loading';
+Vue.use(formLoading);
 
 export default {
   name: 'register',
   props: {
     msg: String,
     hello: String
+  }, data: function(){
+      return {
+          user: {
+              firstName: null,
+              lastName: null,
+              email:null,
+              password: null
+          },
+          errors:[],
+          loading:false,
+          passwordConfirmation: null,
+          passwordError: false
+      };
+  },
+  methods:{
+    validate(){
+
+        console.log(this.user.password, this.passwordConfirmation)
+        return this.user.password === this.passwordConfirmation;
+    },
+  register(){
+      if(!this.validate()){
+          this.passwordError = true;
+          return;
+      }
+     this.passwordError = false;
+        console.log(this.user);
+      userService.create(this.user).then(res => {
+          if(res.success){
+            localStorage.setItem("user-token", res.data.token);
+            this.$router.push('/account', res.data.user);
+          }else{
+              localStorage.removeItem("user-token");
+          }
+
+
+      }).catch(error => {
+          this.errors.push(error);
+          console.log("ERROR ", error)
+
+      }) 
+  }
+
   }
 }
 </script>
