@@ -4,7 +4,7 @@ import axios from 'axios';
 const client = axios.create({
   baseURL: 'http://localhost:3000/',
   timeout: 8000,
-  headers: {'Authorization': 'foobar', 'Content-type': 'application/json', 'Accept': 'application/json'}
+  headers: {'Authorization':localStorage.getItem('user-token'), 'Content-type': 'application/json', 'Accept': 'application/json'}
 });
 
 client.interceptors.response.use((response) => {
@@ -17,5 +17,10 @@ client.interceptors.response.use((response) => {
     return error.response;
   });
 
-
+  client.interceptors.request.use((request) => {
+    console.log(localStorage.getItem('user-token'));
+    request.headers.Authorization = localStorage.getItem('user-token');
+    return request;
+  });
+ 
 export default client; 

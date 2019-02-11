@@ -2,7 +2,7 @@ import Http from './http'; // não precisa de .js
 // import obj from '../models/user'
 
 
-export default{
+export default {
   create : (User) => Http.post('/users', User),
 
   get : (id) => {  
@@ -36,7 +36,7 @@ export default{
     return Http.get('/states/country/'+id);
   }
   
-} 
+}
 
 
 

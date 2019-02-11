@@ -203,6 +203,8 @@
       </md-button>-->
       <md-progress-bar md-mode="indeterminate" v-if="sending"/>
       <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!</md-snackbar>
+      <md-snackbar :md-active.sync="phoneSaved">The phone was saved with success!</md-snackbar>
+
     </form>
 
     <div>
@@ -256,6 +258,8 @@
 </template>
 
 <script>
+import userService from "../services/user-service";
+console.log("Import Statement: ", userService);
 import fab from "vue-fab";
 import { validationMixin } from "vuelidate";
 import {
@@ -265,7 +269,6 @@ import {
   maxLength
 } from "vuelidate/lib/validators";
 
-import userService from "../services/user-service";
 
 export default {
   components: {
@@ -298,6 +301,7 @@ export default {
     phone: {},
     countries: [],
     states: [],
+    phoneSaved:false,
     bgColor: "#7000e8",
     position: "bottom-rigth",
     fabActions: [
@@ -369,7 +373,8 @@ export default {
   },
   methods: {
     loadUser() {
-      this.userService.get(this.$route.userId).then(res => {
+      // console.log("after init", userService);
+      userService.get(1).then(res => {
         console.log("Getting User Information: ", res);
         this.user = res.data;
       });
@@ -393,27 +398,31 @@ export default {
       }
     },
     removePhone(phone, index) {
+
       console.log("Phone: ", phone, "Index:", index);
       if (phone.id) {
         this.userService.removePhone(phone.id);
       } 
 
         this.user.phones.splice(index, 1);
-      
+        this.phoneSaved = true;
+     
     },
     editPhone(phone, index) {
       console.log("Phone: ", phone, "Index:", index);
       this.phone = phone;
       this.manageModal();
+      this.phoneSaved = true;
     },
     addPhonetoUser() {
-      if (this.user.phones.filter(p => p.id === this.phone.id)[0]) {
+      if (this.user.phones.filter(p => p.phone === this.phone.phone)[0]) {
         this.user.phones.filter(p => p === this.phone)[0] = this.phone;
       } else {
         this.user.phones.push(this.phone);
     }
       this.phone = {};
       this.manageModal();
+      this.phoneSaved = true;
     },
     manageModal() {
       this.active = !this.active;
@@ -477,10 +486,15 @@ export default {
         this.addPhonetoUser();
       }
     }
+  // },
+  // created: function() {
+  //   this.loadUser();
+  //   this.getCountries();
   },
-  created: function() {
-    this.loadUser();
-    this.getCountries();
+    mounted: () => {
+    userService.get(1).then(res => {
+        console.log(res.data);
+      });
   }
 };
 </script>
