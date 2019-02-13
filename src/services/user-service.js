@@ -34,6 +34,9 @@ export default {
   }, 
   getStatesByCountry : (id) => {
     return Http.get('/states/country/'+id);
+  },
+  getCitiesByState : (id) => {
+    return Http.get('/cities/state/'+id);
   }
   
 }

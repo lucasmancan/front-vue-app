@@ -9,9 +9,6 @@
         <md-avatar class="md-large md-avatar-icon md-primary">{{user.firstName}}</md-avatar>
       </div>
 
-      <md-subheader>Main Information</md-subheader>
-      <md-divider></md-divider>
-
       <div class="md-layout-item">
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-small-size-100">
@@ -20,7 +17,6 @@
               <md-input
                 name="first-name"
                 id="first-name"
-                autocomplete="given-name"
                 v-model="user.firstName"
                 :disabled="sending"
               />
@@ -35,7 +31,6 @@
               <md-input
                 name="last-name"
                 id="last-name"
-                autocomplete="family-name"
                 v-model="user.lastName"
                 :disabled="sending"
               />
@@ -77,32 +72,42 @@
 
         <md-subheader>Your Address</md-subheader>
         <md-divider></md-divider>
-
-        <div class="md-layout-item md-size-100">
+        <div class="md-layout-item md-size-100" v-if="user.address">
           <div class="md-layout md-gutter">
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('country')">
                 <label for="country">Country</label>
-                <md-input
-                  name="country"
-                  id="country"
-                  autocomplete="given-name"
-                  v-model="user.address.country"
-                  :disabled="sending"
-                />
+                <md-select
+                  v-model="user.address.city.state.country_id"
+                  name="name"
+                  id="id"
+                  placeholder="Country"
+                  @md-selected="getStatesByCountry()"
+                >
+                  <md-option
+                    v-for="country in countries"
+                    v-bind:key="country.id"
+                    v-bind:value="country.id"
+                  >{{country.name}}</md-option>
+                </md-select>
               </md-field>
             </div>
 
             <div class="md-layout-item md-small-size-100">
               <md-field :class="getValidationClass('state')">
                 <label for="state">State</label>
-                <md-input
-                  name="state"
-                  id="state"
-                  autocomplete="family-name"
-                  v-model="user.address.state"
-                  :disabled="sending"
-                />
+                <md-select  @md-selected="getCitiesByState()"
+                  v-model="user.address.city.state_id"
+                  name="name"
+                  id="id"
+                  placeholder="State"
+                >
+                  <md-option
+                    v-for="state in states"
+                    v-bind:key="state.id"
+                    v-bind:value="state.id"
+                  >{{state.name}}</md-option>
+                </md-select>
               </md-field>
             </div>
           </div>
@@ -110,13 +115,18 @@
           <div class="md-layout-item md-small-size-100">
             <md-field :class="getValidationClass('city')">
               <label for="city">City</label>
-              <md-input
-                name="city"
-                id="city"
-                autocomplete="family-name"
-                v-model="user.address.city"
-                :disabled="sending"
-              />
+              <md-select
+                v-model="user.address.city_id"
+                name="name"
+                id="id"
+                placeholder="City"
+              >
+                <md-option
+                  v-for="city in cities"
+                  v-bind:key="city.id"
+                  v-bind:value="city.id"
+                >{{city.name}}</md-option>
+              </md-select>
             </md-field>
           </div>
           <div class="md-layout-item">
@@ -204,7 +214,6 @@
       <md-progress-bar md-mode="indeterminate" v-if="sending"/>
       <md-snackbar :md-active.sync="userSaved">The user {{ lastUser }} was saved with success!</md-snackbar>
       <md-snackbar :md-active.sync="phoneSaved">The phone was saved with success!</md-snackbar>
-
     </form>
 
     <div>
@@ -269,52 +278,41 @@ import {
   maxLength
 } from "vuelidate/lib/validators";
 
-
 export default {
   components: {
     fab
   },
   name: "userValidation",
   mixins: [validationMixin],
-  data: () => ({
-    user: {
-      firstName: null,
-      lastName: null,
-      gender: null,
-      birthDate: null,
-      email: null,
-      address: {
-        city: null,
-        country: null,
-        state: null,
-        street: null,
-        number: null,
-        zipCode: null
+  data: function() {
+    return {
+      user: {
+        address: {},
+        phones: []
       },
-      phones: [],
-      bio: null
-    },
-    userSaved: false,
-    sending: false,
-    lastUser: null,
-    active: false,
-    phone: {},
-    countries: [],
-    states: [],
-    phoneSaved:false,
-    bgColor: "#7000e8",
-    position: "bottom-rigth",
-    fabActions: [
-      {
-        name: "manageModal",
-        icon: "phone"
-      },
-      {
-        name: "saveUser",
-        icon: "how_to_reg"
-      }
-    ]
-  }),
+      userSaved: false,
+      sending: false,
+      lastUser: null,
+      active: false,
+      phone: {},
+      countries: [],
+      states: [],
+      cities: [],
+      phoneSaved: false,
+      bgColor: "#7000e8",
+      position: "bottom-rigth",
+      fabActions: [
+        {
+          name: "manageModal",
+          icon: "phone"
+        },
+        {
+          name: "saveUser",
+          icon: "how_to_reg"
+        }
+      ]
+    };
+  },
   validations: {
     phone: {
       ddd: {
@@ -373,7 +371,6 @@ export default {
   },
   methods: {
     loadUser() {
-      // console.log("after init", userService);
       userService.get(1).then(res => {
         console.log("Getting User Information: ", res);
         this.user = res.data;
@@ -386,27 +383,33 @@ export default {
       });
     },
     getStatesByCountry() {
-      if (this.user.address.country) {
-        this.userService
-          .getStatesByCountry(this.user.address.country.id)
-          .then(res => {
-            console.log("Getting Countries: ", res);
-            this.states = res.data;
+      let self = this;
+      if (this.user.address && this.user.address.city && this.user.address.city.state.country_id) {
+        userService
+          .getStatesByCountry(this.user.address.city.state.country_id)
+          .then(function(res) {
+            self.states.push(res.data);
           });
-      } else {
-        console.log("Select a country first");
+      }
+    },
+    getCitiesByState() {
+      let self = this;
+      if (this.user.address && this.user.address.city && this.user.address.city.state_id) {
+        userService
+          .getCitiesByState(this.user.address.city.state_id)
+          .then(function(res) {
+            self.cities.push(res.data);
+          });
       }
     },
     removePhone(phone, index) {
-
       console.log("Phone: ", phone, "Index:", index);
       if (phone.id) {
         this.userService.removePhone(phone.id);
-      } 
+      }
 
-        this.user.phones.splice(index, 1);
-        this.phoneSaved = true;
-     
+      this.user.phones.splice(index, 1);
+      this.phoneSaved = true;
     },
     editPhone(phone, index) {
       console.log("Phone: ", phone, "Index:", index);
@@ -419,7 +422,7 @@ export default {
         this.user.phones.filter(p => p === this.phone)[0] = this.phone;
       } else {
         this.user.phones.push(this.phone);
-    }
+      }
       this.phone = {};
       this.manageModal();
       this.phoneSaved = true;
@@ -486,15 +489,25 @@ export default {
         this.addPhonetoUser();
       }
     }
-  // },
-  // created: function() {
-  //   this.loadUser();
-  //   this.getCountries();
   },
-    mounted: () => {
+  mounted: function() {
+    userService.getCountries().then(res => {
+      console.log("Getting Countries: ", res);
+      this.countries = res.data;
+    });
+
+    this.getStatesByCountry();
+    this.getCitiesByState();
+
     userService.get(1).then(res => {
-        console.log(res.data);
-      });
+      console.log(res.data);
+      if (!res.data.address) {
+        res.data.address = {};
+        res.data.address.city = {};
+        res.data.address.city.state = {};
+      }
+      this.user = res.data;
+    });
   }
 };
 </script>

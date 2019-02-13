@@ -18,8 +18,7 @@ client.interceptors.response.use((response) => {
   });
 
   client.interceptors.request.use((request) => {
-    console.log(localStorage.getItem('user-token'));
-    request.headers.Authorization = localStorage.getItem('user-token');
+    request.headers.Authorization = "Bearer "+localStorage.getItem('user-token');
     return request;
   });
  
