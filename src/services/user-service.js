@@ -5,8 +5,8 @@ import Http from './http'; // não precisa de .js
 export default {
   create : (User) => Http.post('/users', User),
 
-  get : (id) => {  
-    return Http.get('/users/'+id);
+  get : () => {  
+    return Http.get('/users/');
   },
 
   update : (user) => {
@@ -22,9 +22,11 @@ export default {
   },
 
   updatePhone : (phone) => {
-    return Http.delete('/phones/', phone)
+    return Http.put('/phones/', phone)
   },
-  
+  postPhone : (phone) => {
+    return Http.post('/phones/', phone)
+  },
    getCountries : () => {
     return Http.get('/countries/');
   },
