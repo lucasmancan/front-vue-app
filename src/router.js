@@ -10,14 +10,7 @@ import User from './components/User'
     routes: [
         {
             path: '/',
-            component: Home,
-            children: [{
-                path: '/',
-                component: Login    
-            },{
-                path: '/register',
-                component: Register    
-            }]
+            component: Home
         },
         {
             path: '/login',
@@ -28,11 +21,10 @@ import User from './components/User'
             component: Register,
         },
         {
-            path: '/account',
+            path: '/profile',
             component: Account,
             children: [
-                { path: '', component: User, props: { userId: {} }},
-
+                { path: '', component: User},
             ]
         }
 

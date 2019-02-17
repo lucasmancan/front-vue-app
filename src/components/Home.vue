@@ -10,7 +10,6 @@
     
   </div>
     <div class="col-md-4">
-    <router-view></router-view>
     </div>
     
   </div>

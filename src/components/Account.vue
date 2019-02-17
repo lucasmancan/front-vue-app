@@ -1,5 +1,5 @@
 <template>
-      <md-app  md-waterfall md-mode="flexible">
+      <!-- <md-app  md-waterfall md-mode="flexible">
         <md-app-toolbar class="md-primary md-large">
           <div class="md-toolbar-row">
             <md-button class="md-icon-button" @click="menuVisible = !menuVisible">
@@ -35,7 +35,12 @@
              <router-view></router-view>
       </md-app-content>
 
-      </md-app>
+      </md-app> -->
+
+      <div>
+                     <router-view></router-view>
+
+      </div>
 </template>
 
 <script>
