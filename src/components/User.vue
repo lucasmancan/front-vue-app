@@ -371,7 +371,7 @@
         <div class="loading-overlay" v-if="loading"></div>
         <md-dialog-confirm
           :md-active.sync="confirmationDialog"
-          md-title="Do you realy wanna leave?"
+          md-title="Do you really wanna leave?"
           md-content="Save your changes before you go."
           md-confirm-text="Leave"
           md-cancel-text="Back"
@@ -440,7 +440,7 @@ export default {
       saved: false,
       message: true,
       bgColor: "#000000",
-      position: "bottom-rigth",
+      position: "bottom-left",
       fabActions: [
         {
           name: "logout",
