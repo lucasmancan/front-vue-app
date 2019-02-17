@@ -1,34 +1,31 @@
 <template>
   <md-content class="default-color">
     <md-card>
-
-
       <md-card-media-cover md-solid>
         <!-- <md-card-media md-ratio="16:9">
         <img src="https://http2.mlstatic.com/pintura-de-paisagem-em-tinta-acrilica-sobre-tela-100-x-60-cm-D_NQ_NP_632412-MLB26245677738_102017-F.jpg" />>-->
         <base64-upload
-        v-if="user.coverImage"
+          v-if="user.coverImage"
           :imageStyle="coverStyle"
           :imageSrc="user.coverImage"
           @change="updateCoverImage"
-        > </base64-upload>
+        ></base64-upload>
         <!-- <base64-upload
         v-if="!user.coverImage"
           :imageStyle="coverStyle"
           imageSrc="https://lfmsyssotrage.blob.core.windows.net/cover-images/default.jpg"
           @change="updateCoverImage"
-        > </base64-upload> -->
+        > </base64-upload>-->
         <!-- </md-card-media> -->
         <md-card-area>
           <div class="md-layout md-alignment-center-center profile-image">
-              <md-avatar class="md-large">
-                <base64-upload
-                  v-if="user.profileImage"
-                  :imageSrc="user.profileImage"
-                  @change="updateProfileImage"
-                ></base64-upload>
-            
-              </md-avatar>
+            <md-avatar class="md-large">
+              <base64-upload
+                v-if="user.profileImage"
+                :imageSrc="user.profileImage"
+                @change="updateProfileImage"
+              ></base64-upload>
+            </md-avatar>
           </div>
         </md-card-area>
         <md-card-actions class="mt-20"></md-card-actions>
@@ -39,7 +36,7 @@
     <div class="md-layout md-alignment-center-center mt-20">
       <div class="md-layout-item md-large-size-60 md-xlarge-size-60 md-small-size-100">
         <md-card>
-          <md-card-content>
+          <div class="md-card-content">
             <form novalidate @submit.prevent="validateUser">
               <div class="md-layout md-gutter">
                 <div class="md-layout-item md-small-size-100">
@@ -112,20 +109,21 @@
                 </md-field>
               </div>
             </form>
-          </md-card-content>
+          </div>
         </md-card>
 
         <md-card class="mt-10">
           <md-card-header>
-
-          <md-card-header-text>
-          <span class="md-title"><md-icon>home</md-icon></span>
-          </md-card-header-text>
-         <md-menu md-size="big" md-direction="bottom-end">
-          <md-button class="md-icon-button" @click="manageAddressModal">
-            <md-icon>edit</md-icon>
-          </md-button>
-        </md-menu>
+            <md-card-header-text>
+              <span class="md-title">
+                <md-icon>home</md-icon>
+              </span>
+            </md-card-header-text>
+            <md-menu md-size="big" md-direction="bottom-end">
+              <md-button class="md-icon-button" @click="manageAddressModal">
+                <md-icon>edit</md-icon>
+              </md-button>
+            </md-menu>
           </md-card-header>
           <md-card-content>
             <div class="md-layout-item md-alignment-center-center">
@@ -145,15 +143,16 @@
 
         <md-card class="mt-10">
           <md-card-header>
-          <md-card-header-text>
-          <span class="md-title"><md-icon>phone</md-icon>
-</span>
-          </md-card-header-text>
-         <md-menu md-size="big" md-direction="bottom-end">
-          <md-button class="md-icon-button" @click="addPhone">
-            <md-icon>add</md-icon>
-          </md-button>
-        </md-menu>
+            <md-card-header-text>
+              <span class="md-title">
+                <md-icon>phone</md-icon>
+              </span>
+            </md-card-header-text>
+            <md-menu md-size="big" md-direction="bottom-end">
+              <md-button class="md-icon-button" @click="addPhone">
+                <md-icon>add</md-icon>
+              </md-button>
+            </md-menu>
           </md-card-header>
 
           <md-card-content>
@@ -184,30 +183,33 @@
           <md-dialog-title>Phone</md-dialog-title>
           <div class="md-layout md-alignment-center-center">
             <form novalidate @submit.prevent="validatePhone" class="md-layout-item md-size-80">
-              <div class = "md-layout md-gutter">
- <div class="md-layout-item">
-                <md-field :class="getValidationClass('ddi')">
-                  <label for="ddi">Country Code</label>
-                   <span class="md-prefix">+</span>
-                  <md-input name="ddi" id="ddi" v-model="phone.ddi" :disabled="sending"/>
-                  <span class="md-error" v-if="!$v.phone.ddi.required">The Country Code is required</span>
-                  <span class="md-error" v-else-if="!$v.phone.ddi.maxlength">Invalid Country Code</span>
-                </md-field>
-              </div>
-              <div class="md-layout-item">
-                <md-field :class="getValidationClass('ddd')">
-                  <label for="ddd">Area code</label>
+              <div class="md-layout md-gutter">
+                <div class="md-layout-item">
+                  <md-field :class="getValidationClass('ddi')">
+                    <label for="ddi">Country Code</label>
+                    <span class="md-prefix">+</span>
+                    <md-input name="ddi" id="ddi" v-model="phone.ddi" :disabled="sending"/>
+                    <span
+                      class="md-error"
+                      v-if="!$v.phone.ddi.required"
+                    >The Country Code is required</span>
+                    <span class="md-error" v-else-if="!$v.phone.ddi.maxlength">Invalid Country Code</span>
+                  </md-field>
+                </div>
+                <div class="md-layout-item">
+                  <md-field :class="getValidationClass('ddd')">
+                    <label for="ddd">Area code</label>
                     <span class="md-prefix">(</span>
 
-                  <md-input name="ddd" id="ddd" v-model="phone.ddd" :disabled="sending"/>
-                                    <span class="md-suffix">)</span>
+                    <md-input name="ddd" id="ddd" v-model="phone.ddd" :disabled="sending"/>
+                    <span class="md-suffix">)</span>
+                    
+                    <span class="md-error" v-if="!$v.phone.ddd.required">The Area code is required</span>
+                    <span class="md-error" v-else-if="!$v.phone.ddd.maxlength">Invalid Area code</span>
+                  </md-field>
+                </div>
+              </div>
 
-                  <span class="md-error" v-if="!$v.phone.ddd.required">The Area code is required</span>
-                  <span class="md-error" v-else-if="!$v.phone.ddd.maxlength">Invalid Area code</span>
-                </md-field>
-              </div>
-              </div>
-             
               <div class="md-layout-item">
                 <md-field :class="getValidationClass('phone')">
                   <label for="phone">Phone Number</label>
@@ -216,13 +218,9 @@
                 </md-field>
               </div>
 
-              <md-dialog-actions class="md-layout ">
-                <md-button class="md-button md-raised md-accent" @click="manageModal">
-                  Close
-                </md-button>
-                <md-button type="submit" class="md-button md-raised md-primary">
-                  Save
-                </md-button>
+              <md-dialog-actions class="md-layout">
+                <md-button class="md-button md-raised md-accent" @click="manageModal">Close</md-button>
+                <md-button type="submit" class="md-button md-raised md-primary">Save</md-button>
               </md-dialog-actions>
             </form>
           </div>
@@ -370,32 +368,29 @@
             </div>
           </md-dialog-content>
         </md-dialog>
-              <div class="loading-overlay" v-if="loading">
+        <div class="loading-overlay" v-if="loading"></div>
+        <md-dialog-confirm
+          :md-active.sync="confirmationDialog"
+          md-title="Do you realy wanna leave?"
+          md-content="Save your changes before you go."
+          md-confirm-text="Leave"
+          md-cancel-text="Back"
+          @md-cancel="confirmationDialog = false"
+          @md-confirm="logout"
+        />
       </div>
-  <md-dialog-confirm
-      :md-active.sync="confirmationDialog"
-      md-title="Do you realy wanna leave?"
-      md-content="Save your changes before you go."
-      md-confirm-text="Leave"
-      md-cancel-text="Back"
-      @md-cancel="confirmationDialog = false"
-      @md-confirm="logout" />
 
-  </div>
-
-        <fab
-          :position="position"
-          :bg-color="bgColor"
-          :actions="fabActions"
-          @saveUser="validateUser"
-          @logout="confirmationDialog = true"
-        ></fab>
-      </div>
-      <div class="loading-overlay" v-if="loading">
-    <md-progress-spinner :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
-      </div>
-        
-
+      <fab
+        :position="position"
+        :bg-color="bgColor"
+        :actions="fabActions"
+        @saveUser="validateUser"
+        @logout="confirmationDialog = true"
+      ></fab>
+    </div>
+    <div class="loading-overlay" v-if="loading">
+      <md-progress-spinner :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
+    </div>
   </md-content>
 </template>
 
@@ -428,7 +423,7 @@ export default {
       active: false,
       profileImage: {},
       coverImage: {},
-      loading:false,
+      loading: false,
       countries: [],
       confirmationDialog: false,
       cities: [],
@@ -453,7 +448,7 @@ export default {
         },
         {
           name: "saveUser",
-          icon: "save_alt"
+          icon: "save"
         }
       ]
     };
@@ -528,11 +523,9 @@ export default {
     }
   },
   methods: {
-    logout(){
-
-
-      localStorage.removeItem('user-token');
-      this.$router.replace('login');
+    logout() {
+      localStorage.removeItem("user-token");
+      this.$router.replace("login");
     },
     updateProfileImage(evt) {
       console.log(evt);
@@ -556,7 +549,6 @@ export default {
       userService.get().then(res => {
         this.user = res.data;
         this.loading = false;
-
       });
     },
     saveAddress() {
@@ -700,7 +692,6 @@ export default {
   mounted: function() {
     this.loading = true;
     this.loadUser();
-
   }
 };
 </script>
@@ -728,7 +719,7 @@ export default {
   }
 }
 .cover-image {
-  max-height: 280px !important;
+  max-height: 300px !important;
   padding: 1px;
 }
 .mt-10 {
@@ -741,19 +732,22 @@ export default {
 .mt-20 {
   margin-top: 20px;
 }
-  .loading-overlay {
-    z-index: 9999;
-    top: 0;
-    left: 0;
-    right: 0;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.loading-overlay {
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  right: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.md-card-content{
+  padding: 20px;
+}
 
 .default-color {
   background-color: whitesmoke;
@@ -763,15 +757,14 @@ export default {
   min-width: 110px;
   min-height: 110px;
   border-radius: 80px;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5) ;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
   border: 5px solid white;
 }
 
-@media (min-width: 768px){
-
+@media (min-width: 768px) {
   .md-avatar.md-large {
-      min-width: 160px;
-  min-height: 160px;
+    min-width: 160px;
+    min-height: 160px;
   }
 }
 </style>
