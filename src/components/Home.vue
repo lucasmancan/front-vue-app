@@ -1,4 +1,4 @@
-<template>
+<template class="template">
    <div id="home">
      <div class="home-content">
 <img src="../assets/head_bob.gif">
@@ -43,7 +43,9 @@ export default {
     max-width: 50%;
   }
 }
-
+.template{
+  background-color: whitesmoke;
+}
 h1, h2 {
   font-weight: normal;
 }

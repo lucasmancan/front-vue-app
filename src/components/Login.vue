@@ -28,11 +28,10 @@
         <router-link to="/register">Register</router-link>
       </div>
       <div class="loading-overlay" v-if="loading">
-        <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
+        <md-progress-spinner md-mode="indeterminate"  :md-diameter="100" :md-stroke="10"></md-progress-spinner>
       </div>
     </md-content>
-    <div class="background"/>
-  </div>
+   </div>
 </template>
 
 <script>
@@ -160,7 +159,6 @@ export default {
     z-index: 1;
     padding: 40px;
     width: 100%;
-    max-width: 400px;
     position: relative;
   }
   .loading-overlay {
@@ -171,7 +169,7 @@ export default {
     position: absolute;
     width: 100%;
     height: 100%;
-    background: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 1);
     display: flex;
     align-items: center;
     justify-content: center;

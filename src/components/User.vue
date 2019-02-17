@@ -665,7 +665,7 @@ export default {
         })
         .catch(error => {
           this.sending = false;
-          this.message = error;
+          this.message = error.message;
           this.saved = true;
         });
     },
