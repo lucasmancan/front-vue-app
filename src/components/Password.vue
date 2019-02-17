@@ -1,9 +1,11 @@
 <template class="template">
   <div class="centered-container">
+      
     <md-content class="md-elevation-3">
-      <div class="title">
-        <img src="../assets/head_bob.gif">
+        <div class="title">
+        <h2>E-mail verification</h2>
       </div>
+
       <form class="form" novalidate @submit.prevent="validateAccount">
         <md-field :class="getValidationClass('email')">
           <label>E-mail</label>
@@ -11,21 +13,15 @@
           <span class="md-error" v-if="!$v.account.email.required">The e-mail is required.</span>
           <span class="md-error" v-else-if="!$v.account.email.email">Invalid e-mail address.</span>
         </md-field>
-
-        <md-field md-has-password :class="getValidationClass('password')">
-          <label>Password</label>
-          <md-input v-model="account.password" type="password"></md-input>
-          <span class="md-error" v-if="!$v.account.password.required">The password is required.</span>
-        </md-field>
-        <div class="actions mt-10 md-layout md-alignment-center-center">
-          <md-button class="md-raised md-primary" type="submit">Log in</md-button>
+           <div class="actions mt-10 md-layout md-alignment-center-center">
+          <md-button class="md-raised md-primary" type="submit">Get a new Password</md-button>
         </div>
       </form>
       <md-snackbar :md-active.sync="saved">{{message}}</md-snackbar>
 
       <div class="actions md-layout md-alignment-center-space-between">
-        <router-link to="/resetpassword">Reset password</router-link>
-        <router-link to="/register">Register</router-link>
+        <router-link to="/login">Sign in</router-link>
+        <router-link to="/register">Create a new Profile</router-link>
       </div>
       <div class="loading-overlay" v-if="loading">
         <md-progress-spinner md-mode="indeterminate" :md-stroke="2"></md-progress-spinner>
@@ -42,17 +38,17 @@ import { validationMixin } from "vuelidate";
 import { required, email } from "vuelidate/lib/validators";
 
 export default {
-  name: "login",
+  name: "password",
   mixins: [validationMixin],
   data: function() {
     return {
       account: {
-        email: null,
-        password: null
+        email: "lucasfmancan@hotmail.com",
+        password: "Patrik123456"
       },
       loading: false,
       saved: false,
-      message: null
+      message:false,
     };
   },
   validations: {
@@ -60,20 +56,15 @@ export default {
       email: {
         required,
         email
-      },
-      password: {
-        required
       }
     }
   },
   methods: {
     getValidationClass(fieldName) {
       let field = null;
-
       if (this.$v.account[fieldName]) {
         field = this.$v.account[fieldName];
       }
-
       if (field) {
         return {
           "md-invalid": field.$invalid && field.$dirty
@@ -83,33 +74,27 @@ export default {
     validateAccount() {
       this.$v.account.$touch();
       if (!this.$v.account.$invalid) {
-        this.login();
+        this.resetPassword();
       }
     },
-    login() {
+    resetPassword() {
       this.loading = true;
       auth
-        .login(this.account)
+        .resetPassword(this.account)
         .then(res => {
-          console.log(res);
-          this.message = res.message;
-          this.saved = true;
-          this.loading = false;
+          console.log(this.account);
+        this.message = res.message;
+        this.saved = true;
+        this.loading = false;
 
-          if (res.success) {
-            if (res.success) {
-              localStorage.setItem("user-token", res.data);
-              this.$router.replace("/profile");
-            } else {
-              localStorage.removeItem("user-token");
-            }
-          }
         })
         .catch(error => {
-          this.message = error.message;
-          this.saved = true;
           console.log("ERROR ", error);
-          this.loading = false;
+        this.message = error.message;
+        this.saved = true;
+        this.loading = false;
+
+
         });
     }
   }
@@ -118,7 +103,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
-.centered-container {
+.centered-container{
   background-color: whitesmoke;
 }
 .mt-10 {
@@ -137,6 +122,8 @@ export default {
       max-width: 150px;
     }
   }
+  
+
 
   .actions {
     .md-button {

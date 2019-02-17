@@ -1,6 +1,8 @@
 <template>
   <md-content class="default-color">
     <md-card>
+
+
       <md-card-media-cover md-solid>
         <!-- <md-card-media md-ratio="16:9">
         <img src="https://http2.mlstatic.com/pintura-de-paisagem-em-tinta-acrilica-sobre-tela-100-x-60-cm-D_NQ_NP_632412-MLB26245677738_102017-F.jpg" />>-->
@@ -25,15 +27,11 @@
                   :imageSrc="user.profileImage"
                   @change="updateProfileImage"
                 ></base64-upload>
-                   <!-- <base64-upload
-                  v-else-if="!user.profileImage"
-                  imageSrc="https://lfmsyssotrage.blob.core.windows.net/profile-images/default.jpg"
-                  @change="updateProfileImage"
-                ></base64-upload> -->
+            
               </md-avatar>
           </div>
         </md-card-area>
-        <md-card-actions class="mt-10"></md-card-actions>
+        <md-card-actions class="mt-20"></md-card-actions>
       </md-card-media-cover>
     </md-card>
     <md-divider></md-divider>
@@ -119,9 +117,15 @@
 
         <md-card class="mt-10">
           <md-card-header>
-            <!-- <md-subheader class="md-primary"><md-icon>home</md-icon></md-subheader>
-            <md-divider></md-divider>-->
-            <md-icon>home</md-icon>
+
+          <md-card-header-text>
+          <span class="md-title"><md-icon>home</md-icon></span>
+          </md-card-header-text>
+         <md-menu md-size="big" md-direction="bottom-end">
+          <md-button class="md-icon-button" @click="manageAddressModal">
+            <md-icon>edit</md-icon>
+          </md-button>
+        </md-menu>
           </md-card-header>
           <md-card-content>
             <div class="md-layout-item md-alignment-center-center">
@@ -141,8 +145,17 @@
 
         <md-card class="mt-10">
           <md-card-header>
-            <md-icon>phone</md-icon>
+          <md-card-header-text>
+          <span class="md-title"><md-icon>phone</md-icon>
+</span>
+          </md-card-header-text>
+         <md-menu md-size="big" md-direction="bottom-end">
+          <md-button class="md-icon-button" @click="addPhone">
+            <md-icon>add</md-icon>
+          </md-button>
+        </md-menu>
           </md-card-header>
+
           <md-card-content>
             <div class="md-layout-item">
               <div v-if="!user.phones || !user.phones.length > 0">
@@ -357,19 +370,32 @@
             </div>
           </md-dialog-content>
         </md-dialog>
-        <!-- <md-button class="md-fab md-fab-bottom-right md-primary">
-        <md-icon>phone</md-icon>
-        </md-button>-->
+              <div class="loading-overlay" v-if="loading">
+      </div>
+  <md-dialog-confirm
+      :md-active.sync="confirmationDialog"
+      md-title="Do you realy wanna leave?"
+      md-content="Save your changes before you go."
+      md-confirm-text="Leave"
+      md-cancel-text="Back"
+      @md-cancel="confirmationDialog = false"
+      @md-confirm="logout" />
+
+  </div>
+
         <fab
           :position="position"
           :bg-color="bgColor"
           :actions="fabActions"
-          @manageModal="addPhone"
           @saveUser="validateUser"
-          @saveAddress="manageAddressModal"
+          @logout="confirmationDialog = true"
         ></fab>
       </div>
-    </div>
+      <div class="loading-overlay" v-if="loading">
+    <md-progress-spinner :md-diameter="100" :md-stroke="10" md-mode="indeterminate"></md-progress-spinner>
+      </div>
+        
+
   </md-content>
 </template>
 
@@ -402,7 +428,9 @@ export default {
       active: false,
       profileImage: {},
       coverImage: {},
+      loading:false,
       countries: [],
+      confirmationDialog: false,
       cities: [],
       states: [],
       coverStyle: {
@@ -420,16 +448,12 @@ export default {
       position: "bottom-rigth",
       fabActions: [
         {
-          name: "manageModal",
-          icon: "phone"
+          name: "logout",
+          icon: "exit_to_app"
         },
         {
           name: "saveUser",
-          icon: "how_to_reg"
-        },
-        {
-          name: "saveAddress",
-          icon: "home"
+          icon: "save_alt"
         }
       ]
     };
@@ -504,6 +528,12 @@ export default {
     }
   },
   methods: {
+    logout(){
+
+
+      localStorage.removeItem('user-token');
+      this.$router.replace('login');
+    },
     updateProfileImage(evt) {
       console.log(evt);
       this.profileImage.profileImage = evt.base64;
@@ -525,14 +555,13 @@ export default {
     loadUser() {
       userService.get().then(res => {
         this.user = res.data;
-        console.log("Carregado ", this.user);
+        this.loading = false;
+
       });
     },
     saveAddress() {
       this.user.address = this.address;
       this.saveUser();
-      console.log("Salvando Endereço ");
-
       this.activeAddress = false;
     },
     getCountries() {
@@ -669,7 +698,9 @@ export default {
     }
   },
   mounted: function() {
+    this.loading = true;
     this.loadUser();
+
   }
 };
 </script>
@@ -710,6 +741,19 @@ export default {
 .mt-20 {
   margin-top: 20px;
 }
+  .loading-overlay {
+    z-index: 9999;
+    top: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
 .default-color {
   background-color: whitesmoke;

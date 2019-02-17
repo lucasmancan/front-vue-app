@@ -29,15 +29,16 @@
         <md-field  :class="getValidationClass('passwordConfirmation')">
           <label>Password Confirmation</label>
           <md-input v-model="user.passwordConfirmation" type="password"></md-input>
-          <span
+             <span
             class="md-error"
-            v-if="!$v.user.passwordConfirmation.required"
-          >The password confirmation is required.</span>
+            v-if="!$v.user.passwordConfirmation.sameAsPassword"
+          >The password didn't match.</span>
         </md-field>
         <div class="actions mt-10 md-layout md-alignment-center-center">
           <md-button class="md-raised md-primary" type="submit">Register</md-button>
         </div>
       </form>
+      <md-snackbar :md-active.sync="saved">{{message}}</md-snackbar>
 
       <div class="actions md-layout md-alignment-center-space-between">
         <router-link to="/login">I've already an account</router-link>
@@ -55,7 +56,7 @@ import userService from "../services/user-service";
 import Vue from "vue";
 import router from "vue-router";
 import { validationMixin } from "vuelidate";
-import { required, email, maxLength } from "vuelidate/lib/validators";
+import { required, email, maxLength, minLength, sameAs } from "vuelidate/lib/validators";
 
 export default {
   name: "register",
@@ -69,7 +70,9 @@ export default {
         password: null,
         passwordConfirmation: null
       },
-      loading: false
+      loading: false,
+      saved:false,
+      message:null
     };
   },
   validations: {
@@ -85,12 +88,13 @@ export default {
       email: {
         required
       },
-      password: {
-        required
-      },
-      passwordConfirmation: {
-        required
-      }
+       password: {
+      required,
+      minLength: minLength(6)
+    },
+    passwordConfirmation: {
+      sameAsPassword: sameAs('password')
+    }
     }
   },
     methods: {
@@ -120,9 +124,13 @@ export default {
           .then(res => {
             if (res.success) {
               localStorage.setItem("user-token", res.data.token);
+              this.message = res.message;
+              this.saved = true;
               this.$router.push("/profile");
               this.loading = false;
             } else {
+               this.message = res.message;
+              this.saved = true;
               this.loading = false;
               localStorage.removeItem("user-token");
             }
@@ -130,6 +138,8 @@ export default {
           .catch(error => {
             this.loading = false;
             this.errors.push(error);
+             this.message = error.message;
+              this.saved = true;
             console.log("ERROR ", error);
           });
       }

@@ -1,9 +1,12 @@
 <template>
-  <div class="about">
-    <h1>Hello, I'm Lucas. :(</h1>
-    <!-- <router-link to ="/login">Let's get started</router-link> -->
+  <div>
+    <md-empty-state
+      md-icon="build"
+      md-label="In development"
+      md-description="Your profile online, about page.">
+      <router-link to="/">      <md-button class="md-raised md-primary">Go Home</md-button></router-link>
+    </md-empty-state>
   </div>
-
 </template>
 
 <script>

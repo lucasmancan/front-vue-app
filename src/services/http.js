@@ -10,11 +10,11 @@ const client = axios.create({
 client.interceptors.response.use((response) => {
     return response.data;
   },(error) => {
-    // if (error.response.status === 401) {     
-    //   const requestConfig = error.config;
-    //   return axios(requestConfig);
-    // }
-    return error.response;
+    if (error.response.status === 401) {     
+      
+      return error.response.data ;
+    }
+    return error.response.data ;
   });
 
   client.interceptors.request.use((request) => {

@@ -1,50 +1,113 @@
-
 import Router from 'vue-router'
 import Home from './components/Home'
 import Login from './components/Login'
 import Register from './components/Register'
 import Account from './components/Account'
 import User from './components/User'
- const router = new Router({
+import NotFound from './components/NotFound'
+import About from './components/About'
+import authService from './services/auth-service'
+import Password from './components/Password'
+
+const router = new Router({
     mode: 'history',
-    routes: [
-        {
+    routes: [{
             path: '/',
-            component: Home
+            component: Home,
+            meta: {
+                requiresAuth: false
+            }
         },
         {
+            name: 'login',
             path: '/login',
-            component: Login
+            component: Login,
+            meta: {
+                requiresAuth: false
+            }
+
         },
         {
+            name: 'resetPassword',
+            path: '/resetpassword',
+            component: Password,
+            meta: {
+                requiresAuth: false
+            }
+
+        },
+        {
+            name: 'about',
+            path: '/about',
+            component: About,
+            meta: {
+                requiresAuth: false
+            }
+
+        },
+        {
+            name: 'register',
             path: '/register',
             component: Register,
+            meta: {
+                requiresAuth: false
+            }
+
         },
         {
+            name: 'profile',
             path: '/profile',
             component: Account,
-            children: [
-                { path: '', component: User},
+            meta: {
+                requiresAuth: true
+            },
+            children: [{
+                    path: '',
+                    component: User,
+                    meta: {
+                        requiresAuth: true
+                    }
+                },
+
             ]
+        },
+        {
+            name: 'notfound',
+            path: '/*',
+            component: NotFound,
+            meta: {
+                requiresAuth: false
+            }
+
         }
 
     ]
-}
-)
+})
 router.beforeResolve((to, from, next) => {
-    // If this isn't an initial page load.
-    if (to.name) {
-        // Start the route progress bar.
-       NProgress.start();
-    }
-    next();
-  })
+
+    if (!to.matched.length) {
+        next('/notFound');
+      }else{
+        if (to.meta.requiresAuth) {
+            if (authService.isValid()) {
+                next();
+            } else {
+                next({
+                    name: 'login'
+                });
+            }
+        } else {
+            if (authService.isValid()) {
+                next('/profile');
+            } else {
+                next();
+            }
+        }
+      }
+
   
-  router.afterEach((to, from) => {
-    // Complete the animation of the route progress bar.
-   NProgress.done();
-  })
-  
+})
+
 
 
 export default router;

@@ -4,5 +4,7 @@ import Http from './http'; // não precisa de .js
 export default{
     login : ({email, password}) => Http.post('/auth', {email, password}),
 
-    isValid : () => localStorage.getItem('user-token') != null
+    isValid : () => localStorage.getItem('user-token') != null,
+
+    resetPassword: (account) => Http.post('/auth/reset', account)
 } 
