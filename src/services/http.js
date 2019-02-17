@@ -2,7 +2,7 @@ import axios from 'axios';
 
 
 const client = axios.create({
-  baseURL: 'http://localhost:3000/',
+  baseURL: 'https://your-profile-api.herokuapp.com/',
   timeout: 8000,
   headers: {'Authorization':localStorage.getItem('user-token'), 'Content-type': 'application/json', 'Accept': 'application/json'}
 });
